@@ -3,10 +3,14 @@ import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../context/AuthContext.jsx';
 
+
+
+
+////////////////////////////ahmad saghir byeklo
 const Register = () => {
   const navigate = useNavigate();
   const { register } = useAuth();
-  const [form, setForm] = useState({ name: '', email: '', password: '' });
+    const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '' });
   const [status, setStatus] = useState({ loading: false, error: '' });
 
   const handleChange = (event) => {
@@ -15,6 +19,15 @@ const Register = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    // Basic validation
+    if (!form.name || !form.email || !form.password || !form.confirmPassword) {
+      setStatus({ loading: false, error: 'All fields are required.' });
+      return;
+    }
+    if (form.password !== form.confirmPassword) {
+      setStatus({ loading: false, error: 'Passwords do not match.' });
+      return;
+    }
     try {
       setStatus({ loading: true, error: '' });
       await register(form.name, form.email, form.password);
@@ -62,10 +75,22 @@ const Register = () => {
             onChange={handleChange}
           />
         </div>
+        <div className="form-control">
+          <label htmlFor="confirmPassword">Confirm Password</label>
+          <input
+            name="confirmPassword"
+            id="confirmPassword"
+            type="password"
+            required
+            value={form.confirmPassword}
+            onChange={handleChange}
+          />
+        </div>
         <button className="btn" disabled={status.loading}>
           {status.loading ? 'Creating account...' : 'Register'}
         </button>
       </form>
+      {/* Social registration options will be added below */}
     </section>
   );
 };
